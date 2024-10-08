@@ -10,7 +10,7 @@ const Authentication = require("../middleware/Authentication");
 
 const router = express.Router();
 
-router.post("/", Authentication, createUser);
+router.post("/", createUser);
 router.delete("/:id", removeToken);
 router.post("/login", loginUser);
 router.get("/:id", Authentication, getUserLogin);
