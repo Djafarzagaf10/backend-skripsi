@@ -8,6 +8,7 @@ const fileUpload = require("express-fileupload");
 const path = require("path");
 
 const RouteUser = require("./routers/RouteUser");
+const RouteSetting = require("./routers/RouteSetting");
 const RouteFace = require("./routers/RouteFace");
 const RouteAbsensi = require("./routers/RouteAbsensi");
 
@@ -32,6 +33,7 @@ app.use(fileUpload());
 app.use("/user", RouteUser);
 app.use("/face", RouteFace);
 app.use("/absensi", RouteAbsensi);
+app.use("/setting", RouteSetting);
 
 app.use("/public", express.static(path.join(__dirname, "public")));
 
