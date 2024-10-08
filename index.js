@@ -19,6 +19,7 @@ try {
   db.authenticate();
   console.log("Database connected....");
   // ModelCreate.sync();
+  db.sync()
 } catch (error) {
   console.log(error);
 }

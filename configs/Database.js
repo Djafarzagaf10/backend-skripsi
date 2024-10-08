@@ -1,10 +1,10 @@
 const { Sequelize } = require("sequelize");
 
 const db = new Sequelize({
-  database: "db_inspektorat",
+  database: "railway",
   username: "root",
-  password: "",
-  host: "localhost",
+  password: "yzzNjVRPfAmZHGCBDawzrbgfkwJALJYL",
+  host: "mysql.railway.internal",
   dialect: "mysql",
 });
 
