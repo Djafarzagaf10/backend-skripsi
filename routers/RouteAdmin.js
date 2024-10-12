@@ -7,7 +7,6 @@ const {
   getUser,
 } = require("../controllers/ControllerAdmin");
 const Authentication = require("../middleware/Authentication");
-const { updateSetting } = require("../controllers/ControllerSetting");
 
 const router = express.Router();
 
