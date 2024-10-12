@@ -5,7 +5,17 @@ const path = require("path");
 const ModelAbsensi = require("../models/ModelAbsensi");
 const { Op } = require("sequelize");
 const ModelUser = require("../models/ModelUser");
-const ModelSetting = require("../models/ModelSetting");
+const fs = require("fs");
+
+const getAdminLogin = async (req, res) => {
+  try {
+    const response = await ModelAdmin.findOne({ where: { id_admin: req.params.id } })
+
+    return res.status(200).json({ response })
+  } catch (error) {
+    return res.status(500).json({ error })
+  }
+}
 
 const loginAdmin = async (req, res) => {
   try {
@@ -247,10 +257,33 @@ const getUser = async (req, res) => {
   }
 };
 
+const deleteUser = async (req, res) => {
+  try {
+    const user = await ModelUser.findByPk(req.params.id)
+
+    if (user) {
+      const pathFile = `./public/images/${user.foto}`
+      fs.unlinkSync(pathFile)
+    }
+
+    await ModelUser.destroy({
+      where: {
+        id_user: req.params.id
+      }
+    })
+
+    return res.status(200).json({ message: "User berhasil di hapus!" })
+  } catch (error) {
+    return res.status(500).json({ error })
+  }
+}
+
 module.exports = {
   loginAdmin,
   createAdmin,
   removeToken,
   getKehadiran,
   getUser,
+  getAdminLogin,
+  deleteUser
 };

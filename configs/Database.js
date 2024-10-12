@@ -7,5 +7,12 @@ const db = new Sequelize({
   host: "mysql.railway.internal",
   dialect: "mysql",
 });
+// const db = new Sequelize({
+//   database: "db_inspektorat",
+//   username: "root",
+//   password: "",
+//   host: "localhost",
+//   dialect: "mysql",
+// });
 
 module.exports = db;
