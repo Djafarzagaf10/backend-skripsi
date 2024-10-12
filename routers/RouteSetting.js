@@ -5,6 +5,6 @@ const Authentication = require("../middleware/Authentication");
 const router = express.Router();
 
 router.post("/", Authentication,createSetting);
-router.patch("/:id", updateSetting);
+router.put("/:id", updateSetting);
 
 module.exports = router;
