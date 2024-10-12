@@ -3,7 +3,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const db = require("./configs/Database");
 const fileUpload = require("express-fileupload");
-const ModelCreate = require("./models/ModelAdmin");
+// const ModelCreate = require("./models/ModelAdmin");
 const path = require("path");
 
 const RouteUser = require("./routers/RouteUser");
@@ -19,7 +19,7 @@ const app = express();
 try {
   db.authenticate();
   console.log("Database connected....");
-  ModelCreate.sync();
+  // ModelCreate.sync();
   // db.sync()
 } catch (error) {
   console.log(error);
