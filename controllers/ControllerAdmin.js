@@ -153,7 +153,7 @@ const createAdmin = async (req, res) => {
     const filename = Date.now() + ext;
     const url = `${req.protocol}://${req.get(
       "host"
-    )}/public/images/${filename}`;
+    )}/public/images/admin/${filename}`;
     const allowedType = [".png", ".jpg", ".jpeg"];
     if (!allowedType.includes(ext.toLowerCase()))
       return res.status(422).json({
