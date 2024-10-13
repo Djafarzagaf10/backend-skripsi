@@ -6,6 +6,7 @@ const ModelAbsensi = require("../models/ModelAbsensi");
 const moment = require("moment");
 const { Op } = require("sequelize");
 const ModelSetting = require("../models/ModelSetting");
+const fs = require("fs");
 
 module.exports = {
   createUser: async (req, res) => {
@@ -340,6 +341,165 @@ module.exports = {
       );
 
       return res.status(200).json({ message: "Password berhasil di ubah!" });
+    } catch (error) {
+      return res.status(500).json({ error });
+    }
+  },
+  getUserById: async (req, res) => {
+    try {
+      const response = await ModelUser.findByPk(req.params.id);
+
+      return res.status(200).json({ response });
+    } catch (error) {
+      return res.status(500).json({ error });
+    }
+  },
+  updateUser: async (req, res) => {
+    try {
+      const {
+        nip,
+        nik,
+        nama,
+        jenisKelamin,
+        tempatLahir,
+        tanggalLahir,
+        telpon,
+        agama,
+        statusNikah,
+        alamat,
+        jabatan,
+      } = req.body;
+      if (nip === "")
+        return res
+          .status(400)
+          .json({ message: "NIP tidak boleh kosong!", error: "nip" });
+      if (nik === "")
+        return res
+          .status(400)
+          .json({ message: "NIK tidak boleh kosong!", error: "nik" });
+      if (nama === "")
+        return res
+          .status(400)
+          .json({ message: "Nama tidak boleh kosong!", error: "nama" });
+      if (jenisKelamin === "")
+        return res
+          .status(400)
+          .json({ message: "Pilih Jenis Kelamin!", error: "jenisKelamin" });
+      if (tempatLahir === "")
+        return res.status(400).json({
+          message: "Tempat Lahir tidak boleh kosong!",
+          error: "tempatLahir",
+        });
+      if (tanggalLahir === "")
+        return res.status(400).json({
+          message: "Tanggal Lahir tidak boleh kosong!",
+          error: "tanggalLahir",
+        });
+      if (telpon === "")
+        return res.status(400).json({
+          message: "No telpon tidak boleh kosong!",
+          error: "tanggalLahir",
+        });
+      if (agama === "")
+        return res.status(400).json({
+          message: "Agama tidak boleh kosong!",
+          error: "agama",
+        });
+      if (statusNikah === "")
+        return res.status(400).json({
+          message: "Status nikah tidak boleh kosong!",
+          error: "statusNikah",
+        });
+      if (alamat === "")
+        return res.status(400).json({
+          message: "Alamat tidak boleh kosong!",
+          error: "alamat",
+        });
+      if (jabatan === "")
+        return res.status(400).json({
+          message: "Jabatan tidak boleh kosong!",
+          error: "jabatan",
+        });
+
+      const checkFoto = await ModelUser.findByPk(req.params.id);
+
+      if (req.files.file.name === checkFoto.foto) {
+        await ModelUser.update(
+          {
+            nip: nip,
+            nik: nik,
+            nama: nama,
+            jenis_kelamin: jenisKelamin,
+            tempat_lahir: tempatLahir,
+            tanggal_lahir: tanggalLahir,
+            telpon: telpon,
+            agama: agama,
+            status_nikah: statusNikah,
+            alamat: alamat,
+            jabatan: jabatan,
+          },
+          {
+            where: {
+              id_user: req.params.id,
+            },
+          }
+        );
+        return res
+          .status(200)
+          .json({ message: "Data pengguna berhasil di ubah!" });
+      } else {
+        console.log("hallo");
+
+        const file = req.files.file;
+        const filesize = file.data.length;
+        const ext = path.extname(file.name);
+        const filename = Date.now() + ext;
+        const url = `${req.protocol}://${req.get(
+          "host"
+        )}/public/images/${filename}`;
+        const allowedType = [".png", ".jpg", ".jpeg"];
+        if (!allowedType.includes(ext.toLowerCase()))
+          return res.status(422).json({
+            message: "Foto harus berupa png,jpg atau jpeg!",
+            error: "foto",
+          });
+        if (filesize > 3000000)
+          return res
+            .status(422)
+            .json({ message: "Foto harus di bawah 3 mb!", error: "foto" });
+        file.mv(`./public/images/${filename}`, async (err) => {
+          if (err) return res.status(500).json({ message: err.message });
+          const pathFile = `./public/images/${checkFoto.foto}`;
+          fs.unlinkSync(pathFile);
+
+          await ModelUser.update(
+            {
+              nip: nip,
+              nik: nik,
+              nama: nama,
+              jenis_kelamin: jenisKelamin,
+              tempat_lahir: tempatLahir,
+              tanggal_lahir: tanggalLahir,
+              telpon: telpon,
+              agama: agama,
+              status_nikah: statusNikah,
+              alamat: alamat,
+              jabatan: jabatan,
+              foto: filename,
+              url: url,
+            },
+            {
+              where: {
+                id_user: req.params.id,
+              },
+            }
+          );
+
+          return res
+            .status(200)
+            .json({ message: "Data pengguna berhasil di ubah!" });
+        });
+      }
     } catch (error) {
       return res.status(500).json({ error });
     }

@@ -9,13 +9,15 @@ const fs = require("fs");
 
 const getAdminLogin = async (req, res) => {
   try {
-    const response = await ModelAdmin.findOne({ where: { id_admin: req.params.id } })
+    const response = await ModelAdmin.findOne({
+      where: { id_admin: req.params.id },
+    });
 
-    return res.status(200).json({ response })
+    return res.status(200).json({ response });
   } catch (error) {
-    return res.status(500).json({ error })
+    return res.status(500).json({ error });
   }
-}
+};
 
 const loginAdmin = async (req, res) => {
   try {
@@ -226,18 +228,28 @@ const removeToken = async (req, res) => {
 
 const getKehadiran = async (req, res) => {
   try {
-    const { tanggalAwal, tanggalAkhir } = req.body;
-    if (tanggalAwal == "" || tanggalAkhir == "")
-      return res
-        .status(400)
-        .json({ error: "Tanggal awal dan akhir diperlukan." });
+    const tanggalAwal = req.query.start || "";
+    const tanggalAkhir = req.query.end || "";
+
+    let whereClouse = {
+      status_absensi: 2,
+    };
+
+    if (tanggalAwal && tanggalAkhir) {
+      whereClouse.tanggal_absensi = {
+        [Op.between]: [
+          new Date(tanggalAwal).toISOString().split("T")[0],
+          new Date(tanggalAkhir).toISOString().split("T")[0],
+        ],
+      };
+    }
 
     const response = await ModelAbsensi.findAll({
-      where: {
-        tanggal_absensi: {
-          [Op.between]: [new Date(tanggalAwal), new Date(tanggalAkhir)],
-        },
-        status_absensi: 2,
+      where: whereClouse,
+      include: {
+        model: ModelUser,
+        as: "user",
+        foreignKey: "user_id",
       },
     });
 
@@ -259,24 +271,24 @@ const getUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    const user = await ModelUser.findByPk(req.params.id)
+    const user = await ModelUser.findByPk(req.params.id);
 
     if (user) {
-      const pathFile = `./public/images/${user.foto}`
-      fs.unlinkSync(pathFile)
+      const pathFile = `./public/images/${user.foto}`;
+      fs.unlinkSync(pathFile);
     }
 
     await ModelUser.destroy({
       where: {
-        id_user: req.params.id
-      }
-    })
+        id_user: req.params.id,
+      },
+    });
 
-    return res.status(200).json({ message: "User berhasil di hapus!" })
+    return res.status(200).json({ message: "User berhasil di hapus!" });
   } catch (error) {
-    return res.status(500).json({ error })
+    return res.status(500).json({ error });
   }
-}
+};
 
 module.exports = {
   loginAdmin,
@@ -285,5 +297,5 @@ module.exports = {
   getKehadiran,
   getUser,
   getAdminLogin,
-  deleteUser
+  deleteUser,
 };
