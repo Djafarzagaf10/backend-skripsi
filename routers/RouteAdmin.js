@@ -7,6 +7,7 @@ const {
   getUser,
   getAdminLogin,
   deleteUser,
+  changePassword,
 } = require("../controllers/ControllerAdmin");
 const Authentication = require("../middleware/Authentication");
 
@@ -19,5 +20,6 @@ router.get("/kehadiran", Authentication, getKehadiran);
 router.get("/get-user", Authentication, getUser);
 router.get("/:id", Authentication, getAdminLogin);
 router.delete("/user-delete/:id", Authentication, deleteUser);
+router.put("/change-password/:id", Authentication, changePassword);
 
 module.exports = router;

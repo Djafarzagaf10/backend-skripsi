@@ -290,6 +290,58 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  try {
+    const { passwordOld, password, passwordConfirm } = req.body;
+    const ambilDataUser = await ModelAdmin.findOne({
+      where: {
+        id_admin: req.params.id,
+      },
+    });
+    const checkPassword = await bcrypt.compare(
+      passwordOld,
+      ambilDataUser.password
+    );
+
+    if (!checkPassword)
+      return res
+        .status(400)
+        .json({ message: "Password anda salah!", error: "passwordOld" });
+
+    const validationPassword =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+    if (!validationPassword.test(password))
+      return res.status(400).json({
+        message:
+          "Password setidaknya memiliki 1 angka, 1 karakter khusus, 1 huruf besar, dan 1 huruf kecil!",
+        error: "password",
+      });
+
+    if (passwordConfirm !== password)
+      return res
+        .status(400)
+        .json({ message: "Password tidak cocok!", error: "passwordConfirm" });
+
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(passwordConfirm, salt);
+
+    await ModelAdmin.update(
+      {
+        password: hashPassword,
+      },
+      {
+        where: {
+          id_admin: req.params.id,
+        },
+      }
+    );
+
+    return res.status(200).json({ message: "Password berhasil di ubah!" });
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
+};
+
 module.exports = {
   loginAdmin,
   createAdmin,
@@ -298,4 +350,5 @@ module.exports = {
   getUser,
   getAdminLogin,
   deleteUser,
+  changePassword,
 };
