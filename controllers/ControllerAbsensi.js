@@ -33,11 +33,21 @@ const getAbsensiByUser = async (req, res) => {
 const pengajuanAbsensi = async(req, res) => {
   try {
     const {status, userId} = req.body
-    const date = new Date()
+
+    const checkAbsensiPagi = await ModelAbsensi.findOne({
+      where: {
+        status_kehadiran: 1,
+        user_id: userId,
+        tanggal_absensi: moment().format('YYYY-MM-DD')
+      }
+    })
+
+    if(!checkAbsensiPagi) return res.status(400).json({message: "Anda tidak melakukan absensi di pagi hari!"})
+
     await ModelAbsensi.create({
       user_id: userId,
-      tanggal_absensi: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`,
-      jam_absensi: `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`,
+      tanggal_absensi: moment().format('YYYY-MM-DD'),
+      jam_absensi: moment().format('HH:mm:ss'),
       status_absensi: 2,
       status_kehadiran: status,
     });
