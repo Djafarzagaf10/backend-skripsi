@@ -449,6 +449,8 @@ module.exports = {
           .json({ message: "Data pengguna berhasil di ubah!" });
       } else {
         console.log("hallo");
+        console.log(req.files.file);
+        
 
         const file = req.files.file;
         const filesize = file.data.length;
