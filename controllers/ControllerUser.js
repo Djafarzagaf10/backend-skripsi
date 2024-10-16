@@ -490,7 +490,7 @@ module.exports = {
             },
             {
               where: {
-                id_admin: req.params.id,
+                id_user: req.params.id,
               },
             }
           );
