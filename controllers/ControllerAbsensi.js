@@ -30,4 +30,22 @@ const getAbsensiByUser = async (req, res) => {
   }
 }
 
-module.exports = { getAbsensiByUser };
+const pengajuanAbsensi = async(req, res) => {
+  try {
+    const {status, userId} = req.body
+    const date = new Date()
+    await ModelAbsensi.create({
+      user_id: userId,
+      tanggal_absensi: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`,
+      jam_absensi: `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`,
+      status_absensi: 2,
+      status_kehadiran: status,
+    });
+
+    return res.status(201).json({message: "Berhasil di ajukan!"})
+  } catch (error) {
+    return res.status(500).json({error})
+  }
+}
+
+module.exports = { getAbsensiByUser, pengajuanAbsensi };
