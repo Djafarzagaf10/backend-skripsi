@@ -42,7 +42,7 @@ const pengajuanAbsensi = async(req, res) => {
       }
     })
 
-    if(!checkAbsensiPagi) return res.status(400).json({message: "Anda tidak melakukan absensi di pagi hari!"})
+    if(checkAbsensiPagi) return res.status(400).json({message: "Anda tidak melakukan absensi di pagi hari!"})
 
     await ModelAbsensi.create({
       user_id: userId,
