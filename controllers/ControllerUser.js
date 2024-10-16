@@ -88,6 +88,8 @@ module.exports = {
         return res
           .status(400)
           .json({ message: "NIK Sudah terdaftar!", error: "nik" });
+          console.log(req.files);
+          
 
       if (req.files === null)
         return res
@@ -448,10 +450,6 @@ module.exports = {
           .status(200)
           .json({ message: "Data pengguna berhasil di ubah!" });
       } else {
-        console.log("hallo");
-        console.log(req.files.file);
-        
-
         const file = req.files.file;
         const filesize = file.data.length;
         const ext = path.extname(file.name);
