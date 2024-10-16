@@ -36,7 +36,7 @@ const pengajuanAbsensi = async(req, res) => {
 
     const checkAbsensiPagi = await ModelAbsensi.findOne({
       where: {
-        status_kehadiran: [1,2],
+        status_absensi: [1,2],
         user_id: userId,
         tanggal_absensi: moment().format('YYYY-MM-DD')
       }
