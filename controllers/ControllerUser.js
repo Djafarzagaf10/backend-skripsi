@@ -272,7 +272,6 @@ module.exports = {
           user_id: {
             [Op.ne]: req.params.id,
           },
-          status_kehadiran: "Hadir",
           status_absensi: 1,
         },
         include: {
