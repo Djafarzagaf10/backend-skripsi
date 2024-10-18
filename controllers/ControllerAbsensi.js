@@ -34,7 +34,7 @@ const pengajuanAbsensi = async(req, res) => {
   try {
     const {status, userId, statusAbsensi} = req.body
 
-    const checkAbsensiPagi = await ModelAbsensi.findOne({
+    const checkAbsensi = await ModelAbsensi.findOne({
       where: {
         status_absensi: statusAbsensi,
         user_id: userId,
@@ -42,7 +42,7 @@ const pengajuanAbsensi = async(req, res) => {
       }
     })
 
-    if(checkAbsensiPagi) return res.status(400).json({message: "Anda sudah absen!"})
+    if(checkAbsensi) return res.status(400).json({message: "Anda sudah absen!"})
 
     await ModelAbsensi.create({
       user_id: userId,
